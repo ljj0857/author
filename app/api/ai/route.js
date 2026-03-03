@@ -7,9 +7,9 @@ export async function POST(request) {
     try {
         const { systemPrompt, userPrompt, apiConfig, maxTokens, temperature, topP, reasoningEffort } = await request.json();
 
-        const apiKey = apiConfig?.apiKey || process.env.ZHIPU_API_KEY;
-        const baseUrl = apiConfig?.baseUrl || 'https://open.bigmodel.cn/api/paas/v4';
-        const model = apiConfig?.model || 'glm-4-flash';
+        const apiKey = apiConfig?.apiKey || process.env.API_KEY || process.env.ZHIPU_API_KEY;
+        const baseUrl = apiConfig?.baseUrl || process.env.API_BASE_URL || 'https://open.bigmodel.cn/api/paas/v4';
+        const model = apiConfig?.model || process.env.API_MODEL || 'glm-4-flash';
 
         if (!apiKey) {
             return new Response(

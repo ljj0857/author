@@ -7,9 +7,9 @@ export async function POST(request) {
     try {
         const { systemPrompt, userPrompt, apiConfig, maxTokens, temperature, topP, reasoningEffort } = await request.json();
 
-        const apiKey = apiConfig?.apiKey;
-        const baseUrl = (apiConfig?.baseUrl || 'https://api.anthropic.com').replace(/\/$/, '');
-        const model = apiConfig?.model || 'claude-sonnet-4-20250514';
+        const apiKey = apiConfig?.apiKey || process.env.CLAUDE_API_KEY;
+        const baseUrl = (apiConfig?.baseUrl || process.env.CLAUDE_BASE_URL || 'https://api.anthropic.com').replace(/\/$/, '');
+        const model = apiConfig?.model || process.env.CLAUDE_MODEL || 'claude-sonnet-4-20250514';
 
         if (!apiKey) {
             return new Response(

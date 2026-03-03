@@ -7,6 +7,31 @@ const net = require('net');
 const fs = require('fs');
 const os = require('os');
 
+// 加载 .env.local（轻量实现，无需 dotenv 依赖）
+(function loadEnvFile() {
+    const envPaths = [
+        path.join(__dirname, '..', '.env.local'),
+        path.join(__dirname, '..', '.env'),
+    ];
+    for (const envPath of envPaths) {
+        if (fs.existsSync(envPath)) {
+            const lines = fs.readFileSync(envPath, 'utf8').split('\n');
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith('#')) continue;
+                const eqIdx = trimmed.indexOf('=');
+                if (eqIdx === -1) continue;
+                const key = trimmed.slice(0, eqIdx).trim();
+                const value = trimmed.slice(eqIdx + 1).trim();
+                if (key && !process.env[key]) {
+                    process.env[key] = value;
+                }
+            }
+            break; // 只加载第一个找到的文件
+        }
+    }
+})();
+
 // 日志文件 - 写到用户桌面方便查看
 const logFile = path.join(app.getPath('desktop'), 'author-debug.log');
 function log(msg) {
@@ -27,7 +52,7 @@ let mainWindow;
 let serverProcess;
 
 const isDev = process.argv.includes('--dev');
-const BASE_PORT = 3000;
+const BASE_PORT = parseInt(process.env.PORT, 10) || 3000;
 let actualPort = BASE_PORT;
 let loadRetries = 0;
 const MAX_LOAD_RETRIES = 10;

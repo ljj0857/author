@@ -7,9 +7,9 @@ export async function POST(request) {
     try {
         const { systemPrompt, userPrompt, apiConfig, maxTokens, temperature, topP } = await request.json();
 
-        const apiKey = apiConfig?.apiKey;
-        const baseUrl = (apiConfig?.baseUrl || 'https://api.openai.com/v1').replace(/\/$/, '');
-        const model = apiConfig?.model || 'gpt-4o-mini';
+        const apiKey = apiConfig?.apiKey || process.env.OPENAI_API_KEY;
+        const baseUrl = (apiConfig?.baseUrl || process.env.OPENAI_BASE_URL || 'https://api.openai.com/v1').replace(/\/$/, '');
+        const model = apiConfig?.model || process.env.OPENAI_MODEL || 'gpt-4o-mini';
 
         if (!apiKey) {
             return new Response(

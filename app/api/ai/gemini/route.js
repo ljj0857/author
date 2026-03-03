@@ -10,10 +10,10 @@ export async function POST(request) {
         const apiKey = apiConfig?.apiKey || process.env.GEMINI_API_KEY;
         let rawBaseUrl = apiConfig?.baseUrl;
         if (!rawBaseUrl || rawBaseUrl.includes('open.bigmodel.cn')) {
-            rawBaseUrl = 'https://generativelanguage.googleapis.com/v1beta';
+            rawBaseUrl = process.env.GEMINI_BASE_URL || 'https://generativelanguage.googleapis.com/v1beta';
         }
         const baseUrl = rawBaseUrl.replace(/\/$/, '');
-        const model = apiConfig?.model || 'gemini-2.0-flash';
+        const model = apiConfig?.model || process.env.GEMINI_MODEL || 'gemini-2.0-flash';
 
         if (!apiKey) {
             return new Response(
